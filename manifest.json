@@ -1,0 +1,56 @@
+{
+  "name": "$LGL Miner",
+  "short_name": "LGL Miner",
+  "description": "Earn LGL Points toward the Lagos Life airdrop.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["finance", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/icons/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mine",
+      "short_name": "Mine",
+      "description": "Open the mining screen",
+      "url": "/#mine"
+    },
+    {
+      "name": "Airdrop",
+      "short_name": "Airdrop",
+      "description": "Track airdrop eligibility",
+      "url": "/#airdrop"
+    }
+  ]
+}
