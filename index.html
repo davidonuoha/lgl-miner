@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>$LGL Miner — Lagos Life</title>
+  <meta name="description" content="Earn LGL Points toward the Lagos Life airdrop. Tap to mine, complete tasks and track your airdrop progress ahead of the target $LGL token launch.">
+
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/icons/icon-192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="LGL Miner">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="$LGL Miner">
+  <meta property="og:title" content="$LGL Miner — Lagos Life">
+  <meta property="og:description" content="Earn LGL Points toward the Lagos Life airdrop.">
+  <meta property="og:url" content="https://lgl-miner.vercel.app/">
+  <meta property="og:image" content="https://lgl-miner.vercel.app/assets/images/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="$LGL Miner — Lagos Life">
+  <meta name="twitter:description" content="Earn LGL Points toward the Lagos Life airdrop.">
+  <meta name="twitter:image" content="https://lgl-miner.vercel.app/assets/images/og.png">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="is-booting is-locked">
+
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- Boot loader (replaced once the app hydrates) ------------------------ -->
+  <div id="boot" style="position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:#000;transition:opacity .25s ease">
+    <div style="display:grid;place-items:center;gap:16px">
+      <svg viewBox="0 0 256 256" width="64" height="64" aria-hidden="true">
+        <defs>
+          <linearGradient id="bootGreen" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#00F07E"/><stop offset="1" stop-color="#00A344"/>
+          </linearGradient>
+        </defs>
+        <circle cx="128" cy="128" r="126" fill="url(#bootGreen)"/>
+        <circle cx="128" cy="128" r="118" fill="#0B0B0C"/>
+        <g fill="url(#bootGreen)">
+          <rect x="56" y="146" width="22" height="44" rx="11"/>
+          <rect x="84" y="126" width="22" height="64" rx="11"/>
+          <rect x="112" y="106" width="22" height="84" rx="11"/>
+          <path d="M148 106h22v62h32v22h-54z"/>
+        </g>
+      </svg>
+      <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#7E7E88;font-weight:800">
+        Loading $LGL Miner
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       AUTH GATE
+       Filled by js/auth.js and shown until a session is established.
+       ==================================================================== -->
+  <div class="auth-screen" id="auth-screen" hidden></div>
+
+  <!-- ====================================================================
+       ADMIN CENTER OVERLAY
+       Filled by js/admin.js and opened from the top-bar Admin button.
+       ==================================================================== -->
+  <div class="admin" id="admin-screen" hidden></div>
+
+  <div class="app">
+
+    <!-- ==================================================================
+         SIDEBAR (desktop)
+         ================================================================== -->
+    <aside class="sidebar" aria-label="Primary">
+      <div class="brand">
+        <svg class="lgl-logo" data-logo></svg>
+        <div>
+          <div class="brand__name">$LGL Miner</div>
+          <div class="brand__sub">Lagos Life</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Sections">
+        <button class="nav__item" type="button" data-nav data-view="mine">
+          <svg class="icon" data-icon="hammer"></svg> Mine
+        </button>
+        <button class="nav__item" type="button" data-nav data-view="airdrop">
+          <svg class="icon" data-icon="package"></svg> Airdrop
+        </button>
+        <button class="nav__item" type="button" data-nav data-view="tasks">
+          <svg class="icon" data-icon="list-checks"></svg> Tasks
+        </button>
+        <button class="nav__item" type="button" data-nav data-view="friends">
+          <svg class="icon" data-icon="users"></svg> Friends
+        </button>
+        <button class="nav__item" type="button" data-nav data-view="profile">
+          <svg class="icon" data-icon="user"></svg> Profile
+        </button>
+      </nav>
+
+      <div class="sidebar__foot">
+        <div class="launch-chip">
+          <svg class="icon" data-icon="target"></svg>
+          <div>
+            <div class="launch-chip__t">Target $LGL Launch</div>
+            <div class="launch-chip__d" data-launch-date>March 1, 2027</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==================================================================
+         MAIN
+         ================================================================== -->
+    <div class="main">
+
+      <header class="topbar">
+        <div class="topbar__left">
+          <div class="topbar__brand">
+            <svg class="lgl-logo" data-logo></svg>
+            <span class="topbar__brand-name">$LGL Miner</span>
+          </div>
+          <h1 class="topbar__title" data-topbar-title>Mine</h1>
+        </div>
+
+        <div class="topbar__right">
+          <div class="balance-pill" id="balance-pill" role="status" aria-label="LGL Points balance">
+            <span class="balance-pill__coin"><svg class="icon" data-icon="coins"></svg></span>
+            <span class="balance-pill__val mono" id="topbar-balance">0</span>
+            <span class="balance-pill__unit">PTS</span>
+          </div>
+
+          <button class="icon-btn" type="button" id="topbar-admin"
+                  aria-label="Admin Center" data-tip="Admin Center">
+            <span data-icon="shield-check"></span>
+          </button>
+          <button class="icon-btn" type="button" id="topbar-about" aria-label="About the project">
+            <svg class="icon" data-icon="info"></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="banner" id="offline-banner" role="status">
+        <svg class="icon" data-icon="wifi-slash"></svg>
+        <span>You're offline. Some features may be unavailable until your connection returns.</span>
+      </div>
+
+      <main id="main" tabindex="-1">
+        <section class="view" id="view-mine"    data-view="mine"    aria-label="Mine"></section>
+        <section class="view" id="view-airdrop" data-view="airdrop" aria-label="Airdrop"></section>
+        <section class="view" id="view-tasks"   data-view="tasks"   aria-label="Tasks"></section>
+        <section class="view" id="view-friends" data-view="friends" aria-label="Friends"></section>
+        <section class="view" id="view-profile" data-view="profile" aria-label="Profile"></section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       BOTTOM NAVIGATION (mobile)
+       ==================================================================== -->
+  <nav class="bottom-nav" aria-label="Sections">
+    <div class="bottom-nav__inner">
+      <button class="bnav-item" type="button" data-nav data-view="mine">
+        <svg class="icon" data-icon="hammer"></svg><span>Mine</span>
+      </button>
+      <button class="bnav-item" type="button" data-nav data-view="airdrop">
+        <svg class="icon" data-icon="package"></svg><span>Airdrop</span>
+      </button>
+      <button class="bnav-item" type="button" data-nav data-view="tasks">
+        <svg class="icon" data-icon="list-checks"></svg><span>Tasks</span>
+      </button>
+      <button class="bnav-item" type="button" data-nav data-view="friends">
+        <svg class="icon" data-icon="users"></svg><span>Friends</span>
+      </button>
+      <button class="bnav-item" type="button" data-nav data-view="profile">
+        <svg class="icon" data-icon="user"></svg><span>Profile</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Toasts ------------------------------------------------------------- -->
+  <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- ====================================================================
+       MODAL — ABOUT PROJECT
+       ==================================================================== -->
+  <div class="modal" id="modal-about" role="dialog" aria-modal="true" aria-labelledby="about-title" aria-hidden="true">
+    <div class="modal__scrim"></div>
+    <div class="modal__panel">
+      <div class="modal__head">
+        <svg class="icon" data-icon="info" style="color:var(--green)"></svg>
+        <h2 class="h2" id="about-title">About Project</h2>
+        <button class="icon-btn" type="button" data-close-modal aria-label="Close">
+          <svg class="icon" data-icon="x"></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+
+        <div class="prose">
+          <h3>About Lagos Life</h3>
+          <p>
+            Lagos Life is a community-driven ecosystem for people connected to Lagos —
+            its culture, commerce and creators. The project is building products and
+            community spaces intended to grow into a wider token-enabled ecosystem.
+          </p>
+        </div>
+
+        <div class="prose">
+          <h3>About $LGL</h3>
+          <p>
+            $LGL is the <strong>planned</strong> token for the wider Lagos Life
+            ecosystem, intended to provide token-based utility within that ecosystem
+            when officially launched and enabled. It has not launched. The current
+            target launch date is <strong data-launch-date>March 1, 2027</strong>, and is subject to
+            change through official announcements.
+          </p>
+        </div>
+
+        <div class="prose">
+          <h3>About $LGL Miner</h3>
+          <p id="about-miner"></p>
+          <p>
+            $LGL Miner is an interface for tracking participation — it is not a
+            blockchain miner and it does not perform proof-of-work.
+          </p>
+        </div>
+
+        <div class="prose">
+          <h3>Lagos Life Integration</h3>
+          <p>
+            $LGL is intended to be integrated into the wider Lagos Life game and
+            ecosystem, providing token-based utility there once it is officially
+            launched and enabled.
+          </p>
+          <p class="tiny muted">
+            The Lagos Life game has its own internal virtual currency. That currency
+            is separate from LGL Points and from $LGL, and no relationship between
+            them has been announced. LGL Points do not convert into the Lagos Life
+            virtual currency, and this application does not display any such
+            conversion.
+          </p>
+        </div>
+
+        <div class="prose">
+          <h3>How Mining Points Work</h3>
+          <ul>
+            <li><strong>Taps</strong> — each tap earns points and consumes energy.</li>
+            <li><strong>Energy</strong> — refills continuously; the tank refills fully every hour.</li>
+            <li><strong>Tasks</strong> — eligible actions award one-time or daily bonuses.</li>
+            <li><strong>Bonuses</strong> — daily claims and rewarded-ad rewards.</li>
+            <li><strong>Referrals</strong> — verified invites may credit referral points.</li>
+            <li><strong>Possible future boosts</strong> — temporary multipliers from tasks, events or rewarded ads.</li>
+          </ul>
+        </div>
+
+        <div class="prose">
+          <h3>How the Airdrop Works</h3>
+          <ol style="display:flex;flex-direction:column;gap:6px;padding-left:18px;list-style:decimal">
+            <li>Users accumulate LGL Points.</li>
+            <li>Eligible activity is recorded.</li>
+            <li>An official snapshot is taken.</li>
+            <li>Eligibility is verified.</li>
+            <li>Final allocations are calculated.</li>
+            <li>Claim functionality opens according to official instructions.</li>
+          </ol>
+        </div>
+
+        <div class="notice notice--purple" role="note">
+          <svg class="icon" data-icon="info"></svg>
+          <div>
+            <strong>Points vs $LGL.</strong>
+            LGL Points are not $LGL tokens. Points currently have no exchange or
+            withdrawal function. Your final $LGL allocation will be determined
+            according to the official airdrop rules and snapshot.
+          </div>
+        </div>
+
+        <div class="notice notice--amber" role="note">
+          <svg class="icon" data-icon="warning-circle"></svg>
+          <div id="about-disclaimer"></div>
+        </div>
+
+        <div class="prose">
+          <h3>$LGL Conversion</h3>
+          <p id="about-conversion">
+            Not available yet. Keep earning LGL Points. The official $LGL allocation
+            and conversion formula will be announced during the appropriate airdrop phase.
+          </p>
+          <p class="tiny muted">
+            There is no LGL Points → $LGL exchange rate during the Mining Phase, and no
+            estimate is calculated or shown anywhere in this application.
+          </p>
+        </div>
+
+        <div class="prose">
+          <h3>Airdrop Eligibility</h3>
+          <p>
+            Final eligibility is determined by official rules. Completing any action in
+            this application does not by itself guarantee an allocation. Activity is
+            subject to anti-cheat and anti-bot review before the snapshot.
+          </p>
+        </div>
+
+        <div class="prose">
+          <h3>Tokenomics</h3>
+          <p id="about-tokenomics">
+            Official tokenomics will be published through Lagos Life's official channels.
+          </p>
+        </div>
+
+        <div class="prose">
+          <h3>Roadmap</h3>
+          <p class="tiny muted" style="margin-bottom:14px">
+            All dates below are planned / target dates and may change.
+          </p>
+          <div class="roadmap" id="roadmap-list"></div>
+        </div>
+
+        <div class="notice">
+          <svg class="icon" data-icon="shield-check"></svg>
+          <div>
+            <strong>Official information only.</strong>
+            Token supply, price, contract addresses, exchange listings and allocation
+            figures have not been published. Treat anything else as unofficial.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL — FAQ
+       ==================================================================== -->
+  <div class="modal" id="modal-faq" role="dialog" aria-modal="true" aria-labelledby="faq-title" aria-hidden="true">
+    <div class="modal__scrim"></div>
+    <div class="modal__panel">
+      <div class="modal__head">
+        <svg class="icon" data-icon="question" style="color:var(--blue)"></svg>
+        <h2 class="h2" id="faq-title">Help / FAQ</h2>
+        <button class="icon-btn" type="button" data-close-modal aria-label="Close">
+          <svg class="icon" data-icon="x"></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div id="faq-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL — REWARDED AD
+       ==================================================================== -->
+  <div class="modal" id="modal-ad" role="dialog" aria-modal="true" aria-labelledby="ad-title" aria-hidden="true">
+    <div class="modal__scrim"></div>
+    <div class="modal__panel" style="max-width:460px">
+      <div class="modal__head">
+        <svg class="icon" data-icon="play-circle" style="color:var(--purple)"></svg>
+        <h2 class="h2" id="ad-title">Rewarded Advertisement</h2>
+        <button class="icon-btn" type="button" data-close-modal aria-label="Close">
+          <svg class="icon" data-icon="x"></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div id="ad-stage" style="border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg-2)"></div>
+        <p class="energy__hint" id="ad-status" role="status" style="margin-top:14px"></p>
+        <div class="stack stack--sm" style="margin-top:8px">
+          <button class="btn btn--purple btn--block" type="button" id="ad-start">
+            <svg class="icon" data-icon="play-circle"></svg> Watch Ad
+          </button>
+          <button class="btn btn--primary btn--block" type="button" id="ad-claim" hidden>
+            <svg class="icon" data-icon="gift"></svg> Claim Reward
+          </button>
+          <button class="btn btn--ghost btn--block" type="button" data-close-modal>Cancel</button>
+        </div>
+        <p class="tiny muted" style="margin-top:14px">
+          This prototype grants a demo reward. It does not pay out $LGL tokens and
+          no advertisement is actually served.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL — TERMS
+       ==================================================================== -->
+  <div class="modal" id="modal-terms" role="dialog" aria-modal="true" aria-labelledby="terms-title" aria-hidden="true">
+    <div class="modal__scrim"></div>
+    <div class="modal__panel">
+      <div class="modal__head">
+        <svg class="icon" data-icon="file-text"></svg>
+        <h2 class="h2" id="terms-title">Terms of Use</h2>
+        <button class="icon-btn" type="button" data-close-modal aria-label="Close">
+          <svg class="icon" data-icon="x"></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="notice notice--amber">
+          <svg class="icon" data-icon="warning-circle"></svg>
+          <div>
+            <strong>Placeholder document.</strong>
+            This is a prototype summary, not a legal agreement. Formal terms will be
+            published through official Lagos Life channels before launch.
+          </div>
+        </div>
+        <div class="notice notice--amber">
+          <svg class="icon" data-icon="warning-circle"></svg>
+          <div id="terms-disclaimer"></div>
+        </div>
+        <div class="prose">
+          <h3>1. Nature of the service</h3>
+          <p>
+            $LGL Miner records participation points ("LGL Points") for a planned
+            airdrop. LGL Points are not tokens, securities, money or property, and
+            carry no guaranteed monetary value. LGL Points are mining and
+            participation points; they are not currently $LGL tokens and do not
+            currently have a displayed monetary or token conversion value.
+          </p>
+          <h3>2. No guaranteed allocation</h3>
+          <p>
+            Accumulating points does not guarantee any number of $LGL tokens. Final
+            allocations depend on official rules, eligibility checks and the snapshot.
+          </p>
+          <h3>3. Acceptable use</h3>
+          <p>
+            Automated tapping, scripting, multiple-account abuse, referral farming and
+            any attempt to manipulate rewards are prohibited and may void
+            participation.
+          </p>
+          <h3>4. Changes</h3>
+          <p>
+            Features, reward rates and dates are provisional and may change. The
+            target launch date of <span data-launch-date>March 1, 2027</span> is not a commitment.
+          </p>
+          <h3>5. No financial advice</h3>
+          <p>
+            Nothing in this application constitutes financial, investment or legal
+            advice. Participate responsibly.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL — PRIVACY
+       ==================================================================== -->
+  <div class="modal" id="modal-privacy" role="dialog" aria-modal="true" aria-labelledby="privacy-title" aria-hidden="true">
+    <div class="modal__scrim"></div>
+    <div class="modal__panel">
+      <div class="modal__head">
+        <svg class="icon" data-icon="lock"></svg>
+        <h2 class="h2" id="privacy-title">Privacy</h2>
+        <button class="icon-btn" type="button" data-close-modal aria-label="Close">
+          <svg class="icon" data-icon="x"></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="notice notice--blue">
+          <svg class="icon" data-icon="info"></svg>
+          <div>
+            <strong>Prototype behaviour.</strong>
+            This build stores your progress only in your own browser. Nothing is
+            transmitted to a server.
+          </div>
+        </div>
+        <div class="prose">
+          <h3>What is stored</h3>
+          <ul>
+            <li>Your points, energy, tap count and multiplier.</li>
+            <li>Daily bonus state and completed tasks.</li>
+            <li>Your referral code and locally recorded referral state.</li>
+            <li>Your in-app preferences (haptics, notifications).</li>
+          </ul>
+          <h3>Where it is stored</h3>
+          <p>
+            In this browser's local storage. Clearing your browser data, or using the
+            reset option in Profile, permanently erases it.
+          </p>
+          <h3>What we never collect</h3>
+          <p>
+            No wallet keys, seed phrases, private keys or payment details are ever
+            requested by this application. Never share them with anyone.
+          </p>
+          <h3>Future backend</h3>
+          <p>
+            When a production backend is connected, a published privacy notice will
+            describe what account and device data is processed, why, and for how long.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

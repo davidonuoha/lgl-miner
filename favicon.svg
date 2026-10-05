@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="$LGL Miner">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00F07E"/>
+      <stop offset="0.55" stop-color="#00E676"/>
+      <stop offset="1" stop-color="#00A344"/>
+    </linearGradient>
+    <linearGradient id="d" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#161A24"/>
+      <stop offset="1" stop-color="#080A0F"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="30" fill="#000000"/>
+  <circle cx="64" cy="64" r="52" fill="url(#g)"/>
+  <circle cx="64" cy="64" r="48" fill="url(#d)"/>
+  <circle cx="64" cy="64" r="45.5" fill="none" stroke="#00E676" stroke-opacity="0.35" stroke-width="1"/>
+  <g fill="url(#g)">
+    <rect x="31" y="73" width="9" height="18" rx="4.5"/>
+    <rect x="42.5" y="63" width="9" height="28" rx="4.5"/>
+    <rect x="54" y="53" width="9" height="38" rx="4.5"/>
+    <path d="M67 53h9v26h13v9H67z"/>
+  </g>
+</svg>
